@@ -1,0 +1,84 @@
+body {
+    padding: 0;
+    margin: 0;
+	font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+html, body, #map {
+    height: 100%;
+}
+
+.name {
+	font-weight:bold;
+	/* margin-left:-5px; */
+	/* margin-right:3px; */
+}
+
+.name > a{
+	text-decoration:none;
+}
+
+.shadow {
+    -webkit-filter: drop-shadow( 0px 0px 5px #000 );
+            filter: drop-shadow( 0px 0px 5px #000 ); /* Same syntax as box-shadow */
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip{
+	/* background-color:#D8D8D8; */
+}
+
+.leaflet-popup-content{
+	min-height:140px;
+}
+
+
+
+.field {
+	 font-style: italic;
+}
+.field::after {
+content: ": ";
+}
+
+.dh {
+}
+
+.mail > a {
+      text-decoration:none;
+   }
+   
+.spec{
+	padding-top:5px;
+}
+
+.pr{
+	font-weight:bold;
+	color:navy;
+}
+/* #map {
+	width: 800px; 
+	height: 600px; 
+	border: 1px solid #ccc;
+}
+ */
+#progress {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    left: 400px;
+    top: 300px;
+    width: 200px;
+    height: 20px;
+    margin-top: -20px;
+    margin-left: -100px;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+#progress-bar {
+    width: 0;
+    height: 100%;
+    background-color: #76A6FC;
+    border-radius: 4px;
+}
