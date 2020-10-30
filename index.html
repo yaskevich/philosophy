@@ -21,7 +21,6 @@
 	<link rel="stylesheet" href="MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="css/leaflet-search.min.css" />
 	<link rel="stylesheet" href="css/flag-icon.min.css" />
-	<!-- <script src="leaflet.markercluster.js"></script> -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js"></script>
 	<script src="leaflet-search.src.js"></script>
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
@@ -30,115 +29,109 @@
 <body>
 
 	<div id="map"></div>
-	<span>Test</span>
+	<span>Map</span>
 	<script type="text/javascript">
-	function fetchJSONFile(path, callback) {
-    var httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = function() {
-        if (httpRequest.readyState === 4) {
-            if (httpRequest.status === 200) {
-                var data = JSON.parse(httpRequest.responseText);
-                if (callback) callback(data);
-            }
-        }
-    };
-    httpRequest.open('GET', path);
-    httpRequest.send(); 
-}
-
-fetchJSONFile('query2.json?v1', function(data){
-    // do something with your data
-    //console.log(data);
-	
-			
-		var tiles = L.tileLayer(
-			//'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-			// 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-			// 'http://{s}.tile.openstreetmap.fr/openriverboatmap/{z}/{x}/{y}.png',
-			//'http://pelagios.org/tilesets/imperium/{z}/{x}/{y}.png',
-			'https://tiles.yaskevich.com/pelagios/imperium/{z}/{x}/{y}.png?test',			
-			{
-				minZoom: 3,
-				maxZoom: 11,
-				// https://tiles.yaskevich.com/map/11/14/9283/5568.png
-				// &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors 
-				attribution: '&copy; <a href="http://commons.pelagios.org/">Pelagios commons</a>: Digital Atlas of the Roman Empire | Source: <a href="https://www.wikidata.org/">Wikidata</a>'
-			}),
-			latlng = L.latLng(38.55,25.566667);
-
-		var map = L.map('map', {center: latlng, zoom: 6, layers: [tiles]});
-
-		var markers = L.markerClusterGroup({});
-		var all = [];
-		for (var i = 0; i < data.length; i++) {
-			var item = data[i];
-			if (all.includes(item.person)){
-				continue;
-			} else {
-			 all.push(item.person)
-			}
-			cbir = item.coord.substring(6).slice(0, -1).split(" ");
-			// console.log(item.placeLabel, cbir);
-			
-			
-				
-				var img  = item.personImage? item.personImage.replace("http:", "https:")+'?width=80px':'nouser.jpg';
-				var title = 
-				'<div style="font-weight:bold;width:200px;">' + item.personLabel + '</div>'+
-				
-				
-				'<img src="'+img+'" alt="'+item.personLabel+'" style="float:left;margin:3px 10px 3px 0;" />' +
-				'<div style="font-style:italic">' + (item.personDescription||'just a cool guy') + '</div>';
-				if (item.hasOwnProperty("movementLabel")){
-					title+='<div>Belongs to <b>'+item.movementLabel+'</b></div>';
+		function fetchJSONFile(path, callback) {
+			var httpRequest = new XMLHttpRequest();
+			httpRequest.onreadystatechange = function() {
+				if (httpRequest.readyState === 4) {
+					if (httpRequest.status === 200) {
+						var data = JSON.parse(httpRequest.responseText);
+						if (callback) callback(data);
+					}
 				}
-				
-				
-				
-				title+='<div>Born <b>'+parseInt(item.date_of_birth.substr(1, 4))+'</b>&nbspBC, in <b>'+item.placeLabel+'</b></div>';
-				//	title+='<div>Born in&nbsp;</div>';
-				"<div><i class='fa fa-graduation-cap' title='basic education'></i> "+"gugu"+"</div>";
-				
-				//title += "<div class='spec'><span class='field'>Project</span><span class='pr'>" + b.project + "</span></div>": '';
-				
-				//title += '<div class="mail"><i class="fa fa-laptop" title="e-mail"></i>&nbsp;<a href="mailto:'+ b.email + '">'+ b.email+'</a>' + "</div>";
-				if (item.hasOwnProperty("place_of_deathLabel")){
-					title+='<div>Died in <b>'+item.place_of_deathLabel+'</b></div>';
-				}
-				if (item.hasOwnProperty("article")){
-					title+='<div><a href="'+item.article+'" target="_blank">Read more</a>...</div>';
-				}
-			
-			var marker = L.marker(new L.LatLng(parseFloat(cbir[1]), parseFloat(cbir[0])), { title: item.personLabel });
-				marker.bindPopup(title);
-				markers.addLayer(marker);
+			};
+			httpRequest.open('GET', path);
+			httpRequest.send();
 		}
 
-		map.addLayer(markers);
-		//var searchLayer = L.layerGroup().addTo(map);
-		
-	var controlSearch = new L.Control.Search({
-		position:'topright',		
-		layer: markers,
-		initial: false,
-		zoom: 11,
-		marker: false
-		
-	});
-	// https://github.com/stefanocudini/leaflet-search
-	// https://github.com/Leaflet/Leaflet.markercluster
-	controlSearch.on('search:locationfound', function(event) {
-		markers.zoomToShowLayer(event.layer, function () { event.layer.openPopup();});
-	});
-	map.addControl( controlSearch );
-	//map.on('popupopen', function(e) {
-	//console.log("pop");
-	//});
+		fetchJSONFile('query2.json', function(data) {
+			var tiles = L.tileLayer(
+					'https://dh.gu.se/tiles/imperium/{z}/{x}/{y}.png', {
+						minZoom: 3,
+						maxZoom: 11,
+						// &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors 
+						attribution: '&copy; <a href="http://commons.pelagios.org/">Pelagios commons</a>: <a href="https://dh.gu.se/dare/">Digital Atlas of the Roman Empire</a> | Source: <a href="https://www.wikidata.org/">Wikidata</a>'
+					}),
+				latlng = L.latLng(38.55, 25.566667);
 
-		
-});
+			var map = L.map('map', {
+				center: latlng,
+				zoom: 6,
+				layers: [tiles]
+			});
+
+			var markers = L.markerClusterGroup({});
+			var all = [];
+			for (var i = 0; i < data.length; i++) {
+				var item = data[i];
+				if (all.includes(item.person)) {
+					continue;
+				} else {
+					all.push(item.person)
+				}
+				cbir = item.coord.substring(6).slice(0, -1).split(" ");
+				// console.log(item.placeLabel, cbir);
 
 
+
+				var img = item.personImage ? item.personImage.replace("http:", "https:") + '?width=80px' : 'nouser.jpg';
+				var title =
+					'<div style="font-weight:bold;width:200px;">' + item.personLabel + '</div>' +
+
+
+					'<img src="' + img + '" alt="' + item.personLabel + '" style="float:left;margin:3px 10px 3px 0;" />' +
+					'<div style="font-style:italic">' + (item.personDescription || 'just a cool guy') + '</div>';
+				if (item.hasOwnProperty("movementLabel")) {
+					title += '<div>Belongs to <b>' + item.movementLabel + '</b></div>';
+				}
+
+
+
+				title += '<div>Born <b>' + parseInt(item.date_of_birth.substr(1, 4)) + '</b>&nbspBC, in <b>' + item.placeLabel + '</b></div>';
+				//	title+='<div>Born in&nbsp;</div>';
+				"<div><i class='fa fa-graduation-cap' title='basic education'></i> " + "gugu" + "</div>";
+
+				//title += "<div class='spec'><span class='field'>Project</span><span class='pr'>" + b.project + "</span></div>": '';
+
+				//title += '<div class="mail"><i class="fa fa-laptop" title="e-mail"></i>&nbsp;<a href="mailto:'+ b.email + '">'+ b.email+'</a>' + "</div>";
+				if (item.hasOwnProperty("place_of_deathLabel")) {
+					title += '<div>Died in <b>' + item.place_of_deathLabel + '</b></div>';
+				}
+				if (item.hasOwnProperty("article")) {
+					title += '<div><a href="' + item.article + '" target="_blank">Read more</a>...</div>';
+				}
+
+				var marker = L.marker(new L.LatLng(parseFloat(cbir[1]), parseFloat(cbir[0])), {
+					title: item.personLabel
+				});
+				marker.bindPopup(title);
+				markers.addLayer(marker);
+			}
+
+			map.addLayer(markers);
+			//var searchLayer = L.layerGroup().addTo(map);
+
+			var controlSearch = new L.Control.Search({
+				position: 'topright',
+				layer: markers,
+				initial: false,
+				zoom: 11,
+				marker: false
+
+			});
+			// https://github.com/stefanocudini/leaflet-search
+			// https://github.com/Leaflet/Leaflet.markercluster
+			controlSearch.on('search:locationfound', function(event) {
+				markers.zoomToShowLayer(event.layer, function() {
+					event.layer.openPopup();
+				});
+			});
+			map.addControl(controlSearch);
+			//map.on('popupopen', function(e) {
+			//console.log("pop");
+			//});
+		});	
 	</script>
 </body>
 </html>
